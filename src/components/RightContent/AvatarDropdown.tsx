@@ -32,6 +32,7 @@ const loginOut = async () => {
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+  console.log('menu', menu);
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
@@ -64,13 +65,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   }
 
   const { currentUser } = initialState;
+  console.log('currentUser', currentUser);
 
-  if (!currentUser || !currentUser.name) {
+  if (!currentUser || !currentUser.userInfo) {
     return loading;
   }
 
   const menuItems: ItemType[] = [
-    ...(menu
+    ...(!menu
       ? [
           {
             key: 'center',
@@ -101,8 +103,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   return (
     <HeaderDropdown overlay={menuHeaderDropdown}>
       <span className={`${styles.action} ${styles.account}`}>
-        <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-        <span className={`${styles.name} anticon`}>{currentUser.name}</span>
+        <Avatar
+          size="small"
+          className={styles.avatar}
+          src={currentUser.userInfo.icon}
+          alt="avatar"
+        />
+        <span className={`${styles.name} anticon`}>{currentUser.userInfo.nickname}</span>
       </span>
     </HeaderDropdown>
   );

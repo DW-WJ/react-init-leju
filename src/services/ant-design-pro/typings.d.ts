@@ -21,6 +21,11 @@ declare namespace API {
     };
     address?: string;
     phone?: string;
+    userInfo?: {
+      icon: string;
+      nickname: string;
+      username: string;
+    };
   };
 
   type LoginResult = {
