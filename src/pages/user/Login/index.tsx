@@ -1,6 +1,7 @@
 import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
 import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { saveUserInfo, setToken } from '@/utils/myAuth';
 import {
   AlipayCircleOutlined,
   LockOutlined,
@@ -60,7 +61,12 @@ const Login: React.FC = () => {
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
         });
+        const myData = msg.data as { token: string; userInfo: any };
+        const { token, userInfo } = myData;
+        setToken(token);
+        saveUserInfo(userInfo);
         message.success(defaultLoginSuccessMessage);
+        window.location.href = '/';
         await fetchUserInfo(msg);
         /** 此方法会跳转到 redirect 参数所在的位置 */
         if (!history) return;

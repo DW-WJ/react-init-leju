@@ -7,9 +7,13 @@ import type { RunTimeLayoutConfig } from 'umi';
 import { history, Link, RequestConfig } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { getToken, getUserInfo } from './utils/myAuth';
+
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+const token = getToken();
+
 
 export const request: RequestConfig = {
   timeout: 1000,
@@ -69,7 +73,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      // if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!token && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
