@@ -5,7 +5,8 @@ import { message } from 'antd';
 import type { Effect, Reducer } from 'umi';
 // 通过
 export type TUserInfo = {
-  usarname: string;
+  username: string;
+  // usarname: string;
   password: string;
   nickname: string;
   icon: string;
