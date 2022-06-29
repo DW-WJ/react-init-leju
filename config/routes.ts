@@ -43,6 +43,20 @@
     component: './TableList',
   },
   {
+    path: '/content',
+    name: 'content',
+    icon: 'crown',
+    // component: './Content',
+    routes: [
+      {
+        path: '/content/airtice-list',
+        name: 'airtice-list',
+        icon: 'smile',
+        component: './Content/Airtice',
+      },
+    ],
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },

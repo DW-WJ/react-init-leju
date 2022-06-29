@@ -27,6 +27,10 @@ Scripts provided in `package.json`. It's safe to modify or add additional script
 ```bash
 npm start
 ```
+or
+```bash
+yarn start 推荐
+```
 
 ### Build project
 
@@ -53,5 +57,16 @@ npm test
 ```
 
 ## More
+
+##后端接口地址
+http://leju.bufan.cloud/swagger-ui.html
+
+##react资源地址
+https://www.yuque.com/shijiejintoudehai/react-antd/
+##react地址
+https://reactjs.org/
+https://www.runoob.com/react/react-tutorial.html
+##ant design地址
+https://ant.design/index-cn
 
 You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
