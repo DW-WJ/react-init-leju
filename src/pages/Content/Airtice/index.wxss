@@ -1,0 +1,7 @@
+.main .coverImg {
+  width: 200px;
+  height: 100px;
+}
+.main .btn {
+  margin: 0 5px;
+}

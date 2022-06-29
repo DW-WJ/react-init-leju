@@ -1,28 +1,36 @@
 import { Button, Form, Input, message, Modal, Switch, Upload } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // 引入编辑器组件
 import type { EditorState } from 'braft-editor';
 import BraftEditor from 'braft-editor';
 // 引入编辑器样式
 import { getToken } from '@/utils/myAuth';
 import { UploadOutlined } from '@ant-design/icons';
+// import type { ConnectState } from '';
+// import type { ConnectState } from '@models/common';
 import type { UploadProps } from 'antd';
 import type { UploadFile } from 'antd/lib/upload/interface';
 import 'braft-editor/dist/index.css';
-import { ContentUtils } from 'braft-utils';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
+import type { ArticleType } from '../model';
+import type { MStateType } from './model';
+// import { ContentUtils } from 'braft-utils';
+const { ContentUtils } = require('braft-utils');
 
 type PropsType = {
   isModalVisible: boolean;
   setIsModalVisible: any;
   dispatch: Dispatch;
   refrushList: any;
+  id: string;
+  airticle: ArticleType;
 };
 const namespace = 'airticleEdit';
+// const naamespaceedit = 'airtice';
 const AirticeEdit: React.FC<PropsType> = (props) => {
   //   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { isModalVisible, setIsModalVisible, dispatch, refrushList } = props;
+  const { isModalVisible, setIsModalVisible, dispatch, refrushList, id, airticle } = props;
 
   //   const showModal = () => {
   //     setIsModalVisible(true);
@@ -31,6 +39,33 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
   const [coverImg, setCoverImg] = useState<string>('');
   const [form] = Form.useForm();
   const [ImgList, setImgList] = useState<UploadFile[]>([]);
+  useEffect(() => {
+    if (id) {
+      dispatch({
+        type: `${namespace}/findAirticle`,
+        payload: { id },
+      });
+    }
+  }, [id]);
+  useEffect(() => {
+    // const { id } = airticle;
+    if (airticle.id) {
+      const formData = {
+        ...airticle,
+        isShow: airticle.isShow === 1,
+      };
+      console.log('formData', formData);
+      form.setFieldsValue({
+        ...formData,
+      });
+      seteditorState(BraftEditor.createEditorState(airticle.content1));
+      const myurl: any = airticle.coverImg;
+      const fileName: string = myurl.substr(myurl.lastIndexOf('/') + 1, myurl.length - 1);
+      const file: UploadFile = { uid: airticle.id, name: fileName, url: airticle.coverImg };
+      setImgList([file]);
+      setCoverImg(myurl);
+    }
+  }, [airticle]);
   const callback = () => {
     console.log('回调了。。。');
     // 设置表单为空
@@ -133,6 +168,7 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
 
   return (
     <div>
+      {JSON.stringify(airticle)}
       <Modal title="新增文章" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <Form
           initialValues={{ isShow: true }}
@@ -178,5 +214,10 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
     </div>
   );
 };
-const mapStateToProps = () => ({});
+type StateType = {
+  [namespace]: MStateType;
+};
+const mapStateToProps = (state: StateType) => ({
+  airticle: state[namespace].airticle,
+});
 export default connect(mapStateToProps)(AirticeEdit);

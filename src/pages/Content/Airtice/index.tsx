@@ -1,11 +1,13 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Card, Col, Form, Input, Row, Table } from 'antd';
+import { Button, Card, Col, Form, Input, Row, Table, Tooltip } from 'antd';
 import { pickBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import type { Dispatch } from 'umi';
 import { connect } from 'umi';
 import type { MStateType } from './model';
 // import type { Loading,ConnectState} from '@/'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import AirticeEdit from './Components/AirticeEdit';
 import styles from './index.less';
 
@@ -21,10 +23,12 @@ const ArticleList: React.FC<PropsType> = (props) => {
   //   type: `${naamespace}/findAirticlList`,
   //   payload: { start: 1, limit: 10 },
   // });
+  const [size, setSize] = useState<SizeType>('large');
   const [pageStart, setpageStart] = useState<number>(1);
   const [pageSize, setpageSize] = useState<number>(10);
   const [params, setparams] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editId, setIeditId] = useState<string>('');
   useEffect(() => {
     dispatch({
       type: `${naamespace}/findAirticlList`,
@@ -66,6 +70,36 @@ const ArticleList: React.FC<PropsType> = (props) => {
       dataIndex: 'createTime',
       key: 'createTime',
     },
+    {
+      title: '操作',
+      key: 'setting',
+      render: (text: string, record: any, index: number) => {
+        return (
+          <div>
+            <Tooltip title="编辑">
+              <Button
+                className={styles.btn}
+                title="编辑"
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+                onClick={() => goEdit(record.id)}
+              ></Button>
+            </Tooltip>
+
+            <Tooltip title="删除">
+              <Button
+                className={styles.btn}
+                title="删除"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              ></Button>
+            </Tooltip>
+          </div>
+        );
+      },
+    },
   ];
   const [form] = Form.useForm();
   const onChange = (pageNumber: number, pageSize: number) => {
@@ -94,6 +128,11 @@ const ArticleList: React.FC<PropsType> = (props) => {
       type: `${naamespace}/findAirticlList`,
       payload: { start: pageStart, limit: pageSize, params },
     });
+  };
+  const goEdit = (id: string) => {
+    console.log('id', id);
+    setIeditId(id);
+    setIsModalVisible(true);
   };
   return (
     <PageContainer className={styles.main}>
@@ -145,6 +184,7 @@ const ArticleList: React.FC<PropsType> = (props) => {
         rowKey="id"
       />
       <AirticeEdit
+        id={editId}
         refrushList={refrushList}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
