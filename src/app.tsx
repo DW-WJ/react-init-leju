@@ -13,13 +13,16 @@ const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 const token = getToken();
 
-// export const request: RequestConfig = {
-//   timeout: 1000,
-//   errorConfig: {},
-//   middlewares: [],
-//   requestInterceptors: [],
-//   responseInterceptors: [],
-// };
+export const request: RequestConfig = {
+  timeout: 1000,
+  errorConfig: {},
+  middlewares: [],
+  headers: {
+    token: token || '',
+  },
+  requestInterceptors: [],
+  responseInterceptors: [],
+};
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
