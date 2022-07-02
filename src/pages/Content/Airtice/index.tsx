@@ -120,6 +120,7 @@ const ArticleList: React.FC<PropsType> = (props) => {
     setparams({});
   };
   const goAdd = () => {
+    setIeditId('');
     setIsModalVisible(true);
   };
   // 刷新列表

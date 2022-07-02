@@ -8,6 +8,7 @@ import { getToken } from '@/utils/myAuth';
 import { UploadOutlined } from '@ant-design/icons';
 // import type { ConnectState } from '';
 // import type { ConnectState } from '@models/common';
+import { PageLoading } from '@ant-design/pro-layout';
 import type { UploadProps } from 'antd';
 import type { UploadFile } from 'antd/lib/upload/interface';
 import 'braft-editor/dist/index.css';
@@ -16,7 +17,7 @@ import { connect } from 'umi';
 import type { ArticleType } from '../model';
 import type { MStateType } from './model';
 // import { ContentUtils } from 'braft-utils';
-const { ContentUtils } = require('braft-utils');
+// const { ContentUtils } = require('braft-utils');
 
 type PropsType = {
   isModalVisible: boolean;
@@ -25,12 +26,13 @@ type PropsType = {
   refrushList: any;
   id: string;
   airticle: ArticleType;
+  loading: boolean;
 };
 const namespace = 'airticleEdit';
 // const naamespaceedit = 'airtice';
 const AirticeEdit: React.FC<PropsType> = (props) => {
   //   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { isModalVisible, setIsModalVisible, dispatch, refrushList, id, airticle } = props;
+  const { isModalVisible, setIsModalVisible, dispatch, refrushList, id, airticle, loading } = props;
 
   //   const showModal = () => {
   //     setIsModalVisible(true);
@@ -73,14 +75,7 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
     //   isShow:true
     // })
     // 清空表单
-    form.resetFields();
-    // setCoverImg('');
-    setImgList([]);
-    // seteditorState('')
-    // ContentUtils.clear(editorState);
-    seteditorState(editorState && ContentUtils.clear(editorState));
-    setIsModalVisible(false);
-    refrushList();
+    doClearForm();
   };
   const handleOk = () => {
     // console.log('确定', value);
@@ -98,6 +93,9 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
           content2: editorCotentValue,
           editorType: 0,
         };
+        if (id) {
+          submitform.id = id;
+        }
         console.log('submitform', submitform);
         dispatch({
           type: `${namespace}/saveAirticlList`,
@@ -116,6 +114,7 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    doClearForm();
     console.log('取消');
   };
   const onIsShowSwithChange = () => {};
@@ -130,6 +129,17 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
     // 编辑器内容提交到服务端之前，可直接调用editorState.toHTML()来获取HTML格式的内容
     // const htmlContent = this.state.editorState.toHTML();
     // const result = await saveEditorContent(htmlContent);
+  };
+  const doClearForm = () => {
+    // seteditorState(editorState && ContentUtils.clear(editorState));
+    seteditorState(BraftEditor.createEditorState(null));
+    form.resetFields();
+    // setCoverImg('');
+    setImgList([]);
+    // seteditorState('')
+    // ContentUtils.clear(editorState);
+    setIsModalVisible(false);
+    refrushList();
   };
   const uploadProps: UploadProps = {
     name: 'file',
@@ -168,48 +178,60 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
 
   return (
     <div>
-      {JSON.stringify(airticle)}
-      <Modal title="新增文章" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <Form
-          initialValues={{ isShow: true }}
-          form={form}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 20 }}
-        >
-          <Form.Item
-            label="文章标题"
-            name="title"
-            rules={[{ required: true, message: '请输入文章' }]}
+      <Modal
+        title={id ? '编辑文章' : '新增文章'}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        {loading ? (
+          <PageLoading />
+        ) : (
+          <Form
+            initialValues={{ isShow: true }}
+            form={form}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 20 }}
           >
-            <Input />
-          </Form.Item>
+            <Form.Item
+              label="文章标题"
+              name="title"
+              rules={[{ required: true, message: '请输入文章' }]}
+            >
+              <Input />
+            </Form.Item>
 
-          <Form.Item label="作者" name="author" rules={[{ required: true, message: '请输入作者' }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="文章概要"
-            name="summary"
-            rules={[{ required: true, message: '请输入文章概要' }]}
-          >
-            <Input.TextArea rows={2} />
-          </Form.Item>
-          <Form.Item label="封面图片">
-            <Upload {...uploadProps} fileList={ImgList}>
-              <Button icon={<UploadOutlined />}>点击上传</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item label="是否显示" name="isShow" valuePropName="checked">
-            <Switch defaultChecked onChange={onIsShowSwithChange} />
-          </Form.Item>
-          <Form.Item label="文章内容"></Form.Item>
-          <BraftEditor
-            style={{ border: '1px solid #e5e5e5' }}
-            value={editorState}
-            onChange={handleEditorChange}
-            onSave={submitContent}
-          />
-        </Form>
+            <Form.Item
+              label="作者"
+              name="author"
+              rules={[{ required: true, message: '请输入作者' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="文章概要"
+              name="summary"
+              rules={[{ required: true, message: '请输入文章概要' }]}
+            >
+              <Input.TextArea rows={2} />
+            </Form.Item>
+            <Form.Item label="封面图片">
+              <Upload {...uploadProps} fileList={ImgList}>
+                <Button icon={<UploadOutlined />}>点击上传</Button>
+              </Upload>
+            </Form.Item>
+            <Form.Item label="是否显示" name="isShow" valuePropName="checked">
+              <Switch defaultChecked onChange={onIsShowSwithChange} />
+            </Form.Item>
+            <Form.Item label="文章内容"></Form.Item>
+            <BraftEditor
+              style={{ border: '1px solid #e5e5e5' }}
+              value={editorState}
+              onChange={handleEditorChange}
+              onSave={submitContent}
+            />
+          </Form>
+        )}
       </Modal>
     </div>
   );
@@ -217,7 +239,11 @@ const AirticeEdit: React.FC<PropsType> = (props) => {
 type StateType = {
   [namespace]: MStateType;
 };
-const mapStateToProps = (state: StateType) => ({
-  airticle: state[namespace].airticle,
-});
+const mapStateToProps = (state: StateType) => {
+  console.log('state', state);
+  return {
+    airticle: state[namespace].airticle,
+    loading: state['loading'].effects['airticleEdit/findAirticle'] as boolean,
+  };
+};
 export default connect(mapStateToProps)(AirticeEdit);

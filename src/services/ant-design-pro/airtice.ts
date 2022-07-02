@@ -1,6 +1,7 @@
 // import { request } from 'umi';
 import { ArticleType } from '@/pages/Content/Airtice/model';
-import { request } from '@/utils/request';
+// import { request } from '@/utils/request';
+import { request } from 'umi';
 
 //定义传参数据类型
 type TFindAirticeParams = {
