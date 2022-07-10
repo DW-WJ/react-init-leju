@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Card, Col, Form, Input, Row, Table, Tooltip } from 'antd';
+import { Button, Card, Col, Form, Input, Row, Table, Tooltip, Popconfirm, message } from 'antd';
 import { pickBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import type { Dispatch } from 'umi';
@@ -88,13 +88,21 @@ const ArticleList: React.FC<PropsType> = (props) => {
             </Tooltip>
 
             <Tooltip title="删除">
-              <Button
-                className={styles.btn}
-                title="删除"
-                danger
-                shape="circle"
-                icon={<DeleteOutlined />}
-              ></Button>
+              <Popconfirm
+                title="确定删除?"
+                onConfirm={() => confirm(record.id)}
+                onCancel={() => cancel(record.id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  className={styles.btn}
+                  title="删除"
+                  danger
+                  shape="circle"
+                  icon={<DeleteOutlined />}
+                ></Button>
+              </Popconfirm>
             </Tooltip>
           </div>
         );
@@ -134,6 +142,27 @@ const ArticleList: React.FC<PropsType> = (props) => {
     console.log('id', id);
     setIeditId(id);
     setIsModalVisible(true);
+  };
+  const delAir = (id: string) => {
+    console.log('del', id);
+    dispatch({
+      type: `${naamespace}/deteleAir`,
+      payload: { id },
+    });
+  };
+  const confirm = (id: string) => {
+    console.log('id', id);
+    dispatch({
+      type: `${naamespace}/deteleAir`,
+      payload: { id },
+    });
+
+    // message.success('Click on Yes');
+  };
+
+  const cancel = () => {
+    // console.log(e);
+    message.error('取消删除！');
   };
   return (
     <PageContainer className={styles.main}>

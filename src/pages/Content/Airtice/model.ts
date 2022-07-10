@@ -1,4 +1,7 @@
-import { findAirticlList as findAirticlListApi } from '@/services/ant-design-pro/airtice';
+import {
+  findAirticlList as findAirticlListApi,
+  deleteAirticlList,
+} from '@/services/ant-design-pro/airtice';
 import { message } from 'antd';
 import type { Effect, Reducer } from 'umi';
 
@@ -28,6 +31,7 @@ type MType = {
   state: MStateType;
   effects: {
     findAirticlList: Effect;
+    deteleAir: Effect;
   };
   reducers: {
     setAirticeList: Reducer;
@@ -60,6 +64,14 @@ const M: MType = {
         // 2，对结果进行处理
         console.log('res');
       } catch (error) {}
+    },
+    *deteleAir({ payload }, { call, put }) {
+      const id = payload.id;
+      const res = yield call(deleteAirticlList, id);
+      console.log('res', res);
+      if (res.success) {
+        message.success('删除' + res.message);
+      }
     },
   },
   reducers: {
