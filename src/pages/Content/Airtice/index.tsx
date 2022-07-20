@@ -154,7 +154,7 @@ const ArticleList: React.FC<PropsType> = (props) => {
     console.log('id', id);
     dispatch({
       type: `${naamespace}/deteleAir`,
-      payload: { id },
+      payload: { id, refrushList },
     });
 
     // message.success('Click on Yes');

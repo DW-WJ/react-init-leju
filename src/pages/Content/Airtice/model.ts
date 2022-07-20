@@ -67,10 +67,12 @@ const M: MType = {
     },
     *deteleAir({ payload }, { call, put }) {
       const id = payload.id;
+      const refrushList = payload.refrushList;
       const res = yield call(deleteAirticlList, id);
       console.log('res', res);
       if (res.success) {
         message.success('删除' + res.message);
+        refrushList();
       }
     },
   },
