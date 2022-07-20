@@ -160,7 +160,7 @@ const ArticleList: React.FC<PropsType> = (props) => {
     // message.success('Click on Yes');
   };
 
-  const cancel = () => {
+  const cancel = (id: string) => {
     // console.log(e);
     message.error('取消删除！');
   };
