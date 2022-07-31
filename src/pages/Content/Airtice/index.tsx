@@ -17,6 +17,7 @@ type PropsType = {
   totalCount: number;
   dispatch: Dispatch;
 };
+
 const ArticleList: React.FC<PropsType> = (props) => {
   const { airticeList, totalCount, dispatch } = props;
   // dispatch({

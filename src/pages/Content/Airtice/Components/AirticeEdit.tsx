@@ -30,6 +30,58 @@ type PropsType = {
 };
 const namespace = 'airticleEdit';
 // const naamespaceedit = 'airtice';
+type CoverImgPropsType = {
+  action: string;
+  token: string;
+  coverImg?: string;
+  onChange: () => any;
+};
+const CoverImgUpload: React.FC<CoverImgPropsType> = (props) => {
+  const [coverImg, setCoverImg] = useState<string>('');
+  const [ImgList, setImgList] = useState<UploadFile[]>([]);
+  const { action, token } = props;
+
+  const uploadProps: UploadProps = {
+    name: 'file',
+    action: action,
+    headers: {
+      authorization: 'authorization-text',
+      token: token || '',
+    },
+    listType: 'picture',
+    maxCount: 1,
+    onChange({ file, fileList: fList }) {
+      if (file.status == 'uploading') {
+        console.log('uploading', file, fList);
+      }
+      if (file.status === 'done') {
+        message.success(`${file.name} file uploaded successfully`);
+        console.log('done', file, fList);
+        const { response } = file;
+        const { success, message: errMsg, data } = response;
+        if (success) {
+          const { fileUrl } = data;
+          setCoverImg(fileUrl);
+        } else {
+          message.error(errMsg);
+        }
+      } else if (file.status === 'error') {
+        message.error(`${file.name} file upload failed.`);
+        console.log('error', file, fList);
+      }
+      setImgList(fList);
+    },
+    onRemove() {
+      setCoverImg('');
+    },
+  };
+
+  return (
+    <Upload {...uploadProps} fileList={ImgList}>
+      <Button icon={<UploadOutlined />}>点击上传</Button>
+    </Upload>
+  );
+};
 const AirticeEdit: React.FC<PropsType> = (props) => {
   //   const [isModalVisible, setIsModalVisible] = useState(false);
   const { isModalVisible, setIsModalVisible, dispatch, refrushList, id, airticle, loading } = props;
